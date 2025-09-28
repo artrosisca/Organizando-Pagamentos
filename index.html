@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento da Viagem</title>
+    <!-- Tailwind CSS para um design moderno e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para uma tipografia elegante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter como padrão para toda a página */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Efeito de transição suave para elementos */
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+        /* Estilo para o iframe da planilha */
+        iframe {
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+
+        <!-- Cabeçalho -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-600">Acompanhamento da Viagem</h1>
+            <p class="text-lg text-gray-600 mt-2">Envie seu comprovante e veja o status dos pagamentos abaixo.</p>
+        </header>
+
+        <main class="space-y-8">
+            <!-- Seção da Tabela de Status -->
+            <section id="status" class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Status dos Pagamentos</h2>
+                <p class="text-gray-600 mb-4">
+                    Esta tabela é atualizada automaticamente. Se você já pagou e seu status ainda está "Pendente", aguarde a confirmação manual.
+                </p>
+                <div class="w-full h-96">
+                    <!-- 
+                        IMPORTANTE: Substitua a URL abaixo pela URL pública da SUA planilha.
+                        COMO FAZER:
+                        1. Abra sua planilha de status.
+                        2. Vá em Arquivo > Compartilhar > Publicar na web.
+                        3. Escolha "Incorporar", selecione a página correta e clique em "Publicar".
+                        4. Copie o link que está dentro do atributo 'src="..."' e cole abaixo.
+                    -->
+                    <iframe 
+                        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vThipJt6e139yg3-bBIRkQxlxjuEHGC0x6fIKvqgCR9e6hNVG09Y5-Z4e2JK6BJCu4ReZNXDjs1a-hF/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0">
+                        Carregando planilha...
+                    </iframe>
+                </div>
+            </section>
+
+            <!-- Seção do Formulário de Envio -->
+            <section id="formulario" class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Enviar Comprovante de Pagamento</h2>
+                <form id="paymentForm" class="space-y-6">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700">Seu Nome Completo</label>
+                        <input type="text" id="nome" name="nome" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Seu Melhor E-mail</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="comprovante" class="block text-sm font-medium text-gray-700">Comprovante (Print ou PDF)</label>
+                        <input type="file" id="comprovante" name="comprovante" accept="image/*,.pdf" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <button type="submit" id="submitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                            <span id="buttonText">Enviar Pagamento</span>
+                            <!-- Ícone de "loading" que aparece durante o envio -->
+                            <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                 <!-- Área para exibir mensagens de sucesso ou erro -->
+                <div id="statusMessage" class="mt-6 text-center p-4 rounded-md hidden"></div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>Site de acompanhamento criado com ❤️.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- LÓGICA DO FORMULÁRIO ---
+        
+        // IMPORTANTE: Cole aqui a URL do seu Aplicativo Web gerada pelo Google Apps Script.
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbzBYz-S9xe_SF-WyGREovnN2F-_Mi1nD8FxAHf575YJqyiGYEHuW5KqkBujfuWzOju5/exec';
+
+        // Selecionando os elementos do HTML que vamos manipular
+        const form = document.getElementById('paymentForm');
+        const submitButton = document.getElementById('submitButton');
+        const buttonText = document.getElementById('buttonText');
+        const spinner = document.getElementById('spinner');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Adiciona um "ouvinte" que espera o formulário ser enviado
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Impede o comportamento padrão de recarregar a página
+
+            // Desabilita o botão e mostra o ícone de "loading"
+            submitButton.disabled = true;
+            buttonText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            statusMessage.classList.add('hidden');
+
+            try {
+                const nome = document.getElementById('nome').value;
+                const email = document.getElementById('email').value;
+                const arquivo = document.getElementById('comprovante').files[0];
+
+                if (!arquivo) {
+                    throw new Error("Por favor, selecione um arquivo de comprovante.");
+                }
+
+                // O arquivo precisa ser convertido para um formato de texto (Base64) para ser enviado
+                const reader = new FileReader();
+                reader.readAsDataURL(arquivo);
+                
+                // Quando a conversão terminar, o código abaixo é executado
+                reader.onload = async () => {
+                    const dadosParaEnviar = {
+                        nome: nome,
+                        email: email,
+                        arquivo: reader.result, // O arquivo em formato Base64
+                        nomeArquivo: arquivo.name,
+                        tipoArquivo: arquivo.type
+                    };
+
+                    // Envia os dados para a sua API no Google Apps Script
+                    const response = await fetch(webAppUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(dadosParaEnviar),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        // Exibe a mensagem de sucesso
+                        statusMessage.textContent = result.message;
+                        statusMessage.className = 'mt-6 text-center p-4 rounded-md bg-green-100 text-green-800';
+                        form.reset(); // Limpa o formulário
+                    } else {
+                        throw new Error(result.message);
+                    }
+                };
+                
+                reader.onerror = () => {
+                   throw new Error("Não foi possível ler o arquivo.");
+                };
+
+            } catch (error) {
+                // Em caso de erro, exibe a mensagem de erro
+                statusMessage.textContent = `Erro ao enviar: ${error.message}`;
+                statusMessage.className = 'mt-6 text-center p-4 rounded-md bg-red-100 text-red-800';
+            } finally {
+                // Independentemente de sucesso ou erro, reabilita o botão e esconde o "loading"
+                submitButton.disabled = false;
+                buttonText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                statusMessage.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
