@@ -58,6 +58,14 @@
             font-weight: 500;
             color: #14b8a6;
         }
+        /* Estilos para o Modal */
+        #modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #modal.show #modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -68,7 +76,7 @@
         <header class="text-center mb-16">
             <div class="flex justify-center items-center gap-4 mb-4">
                 <i data-feather="send" class="w-10 h-10 text-teal-500"></i>
-                <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-teal-500 to-sky-500 text-transparent bg-clip-text">Nossa Trip S2</h1>
+                <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-teal-500 to-sky-500 text-transparent bg-clip-text">Viagem à Vista</h1>
             </div>
             <p class="text-base sm:text-lg text-gray-600">Envie o seu comprovativo e veja o status dos pagamentos.</p>
         </header>
@@ -79,7 +87,9 @@
                 <h2 class="text-xl sm:text-2xl font-bold mb-2">Quadro de Pagamentos</h2>
                 <div class="text-gray-600 mb-6 space-y-2">
                     <p class="text-sm sm:text-base">Esta tabela é atualizada após a confirmação manual do pagamento.</p>
-                    
+                    <p class="text-sm text-gray-500 bg-gray-100 p-2 rounded-md">
+                        <strong>Atenção:</strong> Após a confirmação, pode levar até 5 minutos para o seu status mudar aqui no site.
+                    </p>
                 </div>
                 <div class="w-full h-80 sm:h-96">
                     <iframe 
@@ -97,7 +107,7 @@
                 <h2 class="text-xl sm:text-2xl font-bold mb-6">Enviar Comprovativo</h2>
                 <form id="paymentForm" class="space-y-6">
                     <div>
-                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">O seu Nome</label>
+                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">O seu Nome Completo</label>
                         <input type="text" id="nome" name="nome" required class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition">
                     </div>
                     <div>
@@ -130,9 +140,24 @@
         </main>
 
         <footer class="text-center mt-16 text-gray-500 text-sm">
-            <p>Coisa linda.</p>
+            <p>Um site para tornar a nossa viagem mais fácil.</p>
         </footer>
     </div>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center transform scale-95 transition-all duration-300">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                <i data-feather="check" class="w-10 h-10 text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Sucesso!</h3>
+            <p id="modalMessage" class="text-gray-600 mt-2 mb-6"></p>
+            <button id="closeModalButton" class="w-full bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition">
+                Fechar
+            </button>
+        </div>
+    </div>
+
 
     <script>
         const webAppUrl = 'https://script.google.com/macros/s/AKfycbxwwgc7wruZNDf9lZnDA0Xd8Fziws-CiBsUzAn180JISJM8sQH9h9NUW-wIQKvus5T3nw/exec';
@@ -142,6 +167,28 @@
         const buttonText = document.getElementById('buttonText');
         const spinner = document.getElementById('spinner');
         const statusMessage = document.getElementById('statusMessage');
+        const modal = document.getElementById('modal');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeModalButton = document.getElementById('closeModalButton');
+
+        function showModal(message) {
+            modalMessage.textContent = message;
+            modal.classList.add('show');
+            // Re-ativa os ícones dentro do modal
+            feather.replace(); 
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+        }
+
+        // Adiciona eventos para fechar o modal
+        closeModalButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
 
         function isValidEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -206,8 +253,7 @@
                     console.log("Dados da resposta:", result);
 
                     if (result.status === 'success') {
-                        statusMessage.textContent = result.message;
-                        statusMessage.className = 'mt-6 text-center p-4 rounded-md bg-green-100 text-green-800';
+                        showModal(result.message); // Chamar o modal!
                         form.reset();
                         document.getElementById('fileNameDisplay').textContent = '';
                     } else {
