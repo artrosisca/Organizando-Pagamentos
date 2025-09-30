@@ -1,4 +1,5 @@
 Organizando Pagamentos
+
 📝 Descrição
 Um simples rastreador de pagamentos construído com HTML que se integra com o ecossistema do Google para automatizar o armazenamento de informações. O sistema utiliza uma planilha do Google Sheets, gerenciada por um Google Apps Script, para salvar um log detalhado de cada evento. Adicionalmente, os comprovantes de pagamento são enviados e organizados em uma pasta específica no Google Drive.
 
