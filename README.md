@@ -18,4 +18,5 @@ Integração transparente: A comunicação entre o formulário HTML e os serviç
   * Google Sheets
   * Google Drive
 
-<img width="1396" height="1599" alt="image" src="https://github.com/user-attachments/assets/728d3232-13fe-455f-8a50-c5ad07566c61" />
+![Uploading image.png…]()
+
