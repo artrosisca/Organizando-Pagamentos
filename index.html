@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acompanhamento da Viagem</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Biblioteca de Ícones (Feather Icons) -->
     <script src="https://unpkg.com/feather-icons"></script>
     <style>
         body {
@@ -32,11 +29,11 @@
     <div class="container mx-auto max-w-4xl p-5 sm:p-8">
 
         <main class="space-y-8 sm:space-y-10">
-            <!-- Secção do Quadro de Pagamentos -->
             <section id="status" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
                 <h2 class="text-xl sm:text-2xl font-bold mb-2">Quadro de Pagamentos</h2>
                 <div class="text-slate-600 mb-6 space-y-2">
                     <p class="text-sm sm:text-base">Esta tabela é atualizada após a confirmação manual do pagamento.</p>
+                    <h3> <b>🚨 Ana Rafaela e Ana Proença, voces pagam R$ 93,28 no mes de outubro ta bom 😘</b> </h3>
                 </div>
                 <div class="w-full h-80 sm:h-96 rounded-xl border border-slate-200 overflow-hidden">
                     <iframe 
@@ -47,9 +44,27 @@
                         A carregar planilha...
                     </iframe>
                 </div>
-            </section>
 
-            <!-- Secção do Formulário -->
+                <div class="mt-6 pt-6 border-t border-slate-200">
+                    <label class="block text-sm font-medium text-slate-700 mb-2 text-center">Chave PIX </label>
+                    <div class="flex justify-center items-center gap-2">
+                        
+                        <button 
+                            id="copyButton" 
+                            title="Clique para copiar" 
+                            class="flex items-center justify-center gap-3 px-4 py-2 rounded-lg font-medium text-base sm:text-lg bg-slate-200 text-sky-600 hover:bg-teal-100 hover:text-teal-600 transition-all duration-200">
+                            
+                            <span id="pix-email" class="truncate">arthur.rosisca@hotmail.com</span>
+                            
+                            <i data-feather="copy" class="w-5 h-5 flex-shrink-0"></i>
+                        </button>
+                        </div>
+                    <span id="copyFeedback" class="text-sm text-green-600 mt-2 block h-4 text-center transition-opacity duration-300 opacity-0">
+                        Copiado!
+                    </span>
+                </div>
+                </section>
+
             <section id="formulario" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
                 <h2 class="text-xl sm:text-2xl font-bold mb-6">Enviar Comprovante</h2>
                 <form id="paymentForm" class="space-y-6">
@@ -58,7 +73,7 @@
                         <input type="text" id="nome" name="nome" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition">
                     </div>
                     <div>
-                        <label for="comprovante" class="block text-sm font-medium text-slate-700 mb-1">Comprovante (Print ou PDF)</label>
+                        <label for="comprovante" class="block text-sm font-medium text-slate-700 mb-1">Comprovativo (Print ou PDF)</label>
                         <div id="file-upload-area" class="relative border-2 border-dashed border-slate-300 rounded-xl p-10 text-center cursor-pointer transition hover:border-sky-500 hover:bg-sky-50">
                             <input type="file" id="comprovante" name="comprovante" accept="image/*,.pdf" required class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer">
                             <div class="flex flex-col items-center">
@@ -84,7 +99,6 @@
 
     </div>
 
-    <!-- Pop-up Modal -->
     <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
         <div id="modal-content" class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center transform scale-95 transition-all duration-300">
             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
@@ -99,7 +113,7 @@
     </div>
 
     <script>
-        const webAppUrl = 'https://script.google.com/macros/s/AKfycbwlgUCc3dJBdjYsUG9dHsOZolRbZZLGxY9JIMWtD7h537mKJE_5Ff3mXNQC1fx9G-U6/exec';
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbxwwgc7wruZNDf9lZnDA0Xd8Fziws-CiBsUzAn180JISJM8sQH9h9NUW-wIQKvus5T3nw/exec';
 
         const form = document.getElementById('paymentForm');
         const submitButton = document.getElementById('submitButton');
@@ -239,6 +253,123 @@
                 fileNameDisplay.textContent = '';
             }
         });
+
+
+        // ======================================
+        // ==== SCRIPT PIX ATUALIZADO ====
+        // ======================================
+        const copyButton = document.getElementById('copyButton');
+        const pixEmailElement = document.getElementById('pix-email'); // O <span> dentro do botão
+        const copyFeedback = document.getElementById('copyFeedback');
+        let copyTimeout = null; // Variável para controlar o timeout
+
+        // --- Funções de Feedback Visual ---
+
+        function showCopySuccess() {
+            // Limpa timeout anterior se houver
+            if (copyTimeout) clearTimeout(copyTimeout);
+
+            copyFeedback.textContent = 'Copiado!';
+            copyFeedback.classList.remove('opacity-0', 'text-red-500'); // Garante que não está vermelho
+            copyFeedback.classList.add('text-green-600');
+            
+            // Mudar o ícone para "check"
+            // O ícone agora está dentro do botão
+            const iconElement = copyButton.querySelector('i');
+            if(iconElement) {
+                iconElement.remove();
+                copyButton.insertAdjacentHTML('beforeend', '<i data-feather="check" class="w-5 h-5 flex-shrink-0 text-green-600"></i>');
+                feather.replace(); // Renderiza o novo ícone
+            }
+
+            // Resetar depois de 2 segundos
+            copyTimeout = setTimeout(() => {
+                copyFeedback.classList.add('opacity-0');
+                // Voltar o ícone para "copy"
+                const checkIcon = copyButton.querySelector('i');
+                if(checkIcon) {
+                    checkIcon.remove();
+                    copyButton.insertAdjacentHTML('beforeend', '<i data-feather="copy" class="w-5 h-5 flex-shrink-0"></i>');
+                    feather.replace(); // Renderiza o ícone original
+                }
+            }, 2000);
+        }
+
+        function showCopyError(err) {
+            console.error('Falha ao copiar: ', err);
+            // Limpa timeout anterior se houver
+            if (copyTimeout) clearTimeout(copyTimeout);
+
+            copyFeedback.textContent = 'Falha ao copiar.';
+            copyFeedback.classList.add('text-red-500'); // Mostra erro em vermelho
+            copyFeedback.classList.remove('opacity-0', 'text-green-600');
+
+            // Resetar depois de 2 segundos
+            copyTimeout = setTimeout(() => {
+                copyFeedback.classList.add('opacity-0');
+            }, 2000);
+        }
+
+        // --- Função de Cópia Fallback (Clássica) ---
+        function copyTextFallback(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            // Tornar invisível e fora da tela
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            textArea.style.opacity = '0';
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select(); // Seleciona o texto
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    throw new Error('Fallback copy command failed');
+                }
+            } catch (err) {
+                showCopyError(err);
+            }
+
+            document.body.removeChild(textArea); // Limpa o elemento
+        }
+        
+        // --- Função de ação de cópia reutilizável ---
+        function handleCopyAction() {
+            // Pega o texto do <span> que está dentro do botão
+            const pixEmail = pixEmailElement.textContent;
+
+            // Verifica se a API moderna (navigator.clipboard) está disponível
+            if (navigator.clipboard && window.isSecureContext) {
+                // Tenta usar a API moderna
+                navigator.clipboard.writeText(pixEmail).then(() => {
+                    showCopySuccess();
+                }).catch(err => {
+                    // Se a API moderna falhar (ex: permissão negada), tenta o fallback
+                    console.warn('API moderna falhou, tentando fallback.', err);
+                    copyTextFallback(pixEmail);
+                });
+            } else {
+                // Se a API moderna não estiver disponível (ex: HTTP ou file://),
+                // usa o fallback diretamente.
+                console.warn('Contexto inseguro ou API indisponível. Usando fallback.');
+                copyTextFallback(pixEmail);
+            }
+        }
+
+        // --- Event Listeners Principais ---
+        // Agora SÓ o botão precisa do listener
+        copyButton.addEventListener('click', handleCopyAction);
+        
+        // ====================================
+        // ==== SCRIPT PIX TERMINA AQUI ====
+        // ====================================
+
 
         feather.replace();
     </script>
